@@ -1,28 +1,27 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div>
+    <Project :lists="lists" />
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
-
 export default {
-  name: "App",
   components: {
-    HelloWorld
+    Project: () => import("@/components/Project")
+  },
+  computed: {
+    lists() {
+      return [...Array(3).keys()].map(listIndex => {
+        return {
+          label: `List ${listIndex + 1}`,
+          tasks: [...Array(10).keys()].map(taskIndex => {
+            return {
+              label: `Task ${taskIndex + 1}`
+            };
+          })
+        };
+      });
+    }
   }
 };
 </script>
-
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
