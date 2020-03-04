@@ -11,7 +11,7 @@ export default {
   },
   computed: {
     lists() {
-      // create some sample lists of tasks
+      // create some sample lists of items
       const colors = [
         "rgba(255, 0, 0, 0.1)",
         "rgba(0, 255, 0, 0.1)",
@@ -22,21 +22,23 @@ export default {
         const listId = Math.random()
           .toString(36)
           .substring(7);
-        return {
-          id: listId,
-          label: `List ${listIndex + 1}`,
-          color: colors.splice(0, 1),
-          tasks: [...Array(10).keys()].map(taskIndex => {
-            const id = Math.random()
+
+        const label = `List ${listIndex + 1}`;
+        const color = colors.splice(0, 1);
+
+        const items = [...Array(Math.round(Math.random() * 10)).keys()].map(
+          itemIndex => {
+            const taskId = Math.random()
               .toString(36)
               .substring(7);
-            return {
-              id,
-              listId,
-              label: `Task ${taskIndex + 1}`
-            };
-          })
-        };
+
+            const label = `Item ${itemIndex + 1}`;
+
+            return { id: taskId, listId, label };
+          }
+        );
+
+        return { id: listId, items, label, color };
       });
     }
   }

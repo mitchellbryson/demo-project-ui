@@ -1,20 +1,20 @@
 <template>
-  <div>
-    <Task v-for="task in tasks" :key="task.label" :task="task" class="task" />
+  <div class="items">
+    <Item v-for="item in items" :key="item.id" :item="item" />
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    tasks: {
+    items: {
       required: true,
       type: Array
     }
   },
 
   components: {
-    Task: () => import("@/components/Task")
+    Item: () => import("@/components/Item")
   }
 };
 </script>

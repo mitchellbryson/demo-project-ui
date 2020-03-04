@@ -1,9 +1,9 @@
 <template>
   <div class="list rounded" :style="styles">
-    <div ref="label" class="list-label">
+    <div class="list-label">
       {{ list.label }}
     </div>
-    <Tasks :tasks="list.tasks" ref="tasks" class="tasks" />
+    <Items :items="list.items" />
   </div>
 </template>
 
@@ -16,14 +16,23 @@ export default {
     }
   },
 
-  components: {
-    Tasks: () => import("@/components/Tasks")
-  },
-
   computed: {
     styles() {
-      return `--offset-top: ${this.list.offsetTop}; --height: ${this.list.height}; background-color: ${this.list.color};`;
+      return `background-color: ${this.list.color};`;
     }
+  },
+
+  components: {
+    Items: () => import("@/components/Items")
   }
 };
 </script>
+
+<style lang="sass" scoped>
+.list
+  background: rgba($dark, .1)
+.list-label
+  padding: ($spacer / 2) $spacer
+  color: rgba($dark, .6)
+  font-weight: 600
+</style>

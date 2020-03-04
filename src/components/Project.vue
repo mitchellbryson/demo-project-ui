@@ -1,24 +1,16 @@
 <template>
-  <div>
+  <div class="project-wrapper d-flex flex-column">
     <ActionGroup
       class="project-actions"
       :actions="layout.options"
       :active.sync="layout.active"
     />
 
-    <div class="project bg-light">
-      <div
-        class="project-canvas"
+    <div class="project-scroll flex-grow-1 bg-light">
+      <Lists
+        :lists="lists"
         :class="layout.options[layout.active].toLowerCase()"
-        :style="`--height: ${height}; --width: ${width}`"
-      >
-        <List
-          v-for="list in listsComputed"
-          :key="list.label"
-          :list="list"
-          class="list"
-        />
-      </div>
+      />
     </div>
   </div>
 </template>
@@ -31,13 +23,13 @@ export default {
 
   components: {
     ActionGroup: () => import("@/components/ActionGroup"),
-    List: () => import("@/components/List")
+    Lists: () => import("@/components/Lists")
   },
 
   data() {
     return {
       layout: {
-        active: 0,
+        active: 1,
         options: ["Table", "KanBan", "Timeline"]
       }
     };
@@ -51,17 +43,17 @@ export default {
       let height = 0;
       if (this.activeLayoutName == "Table") {
         height = this.lists
-          .map(list => list.tasks.length)
+          .map(list => list.items.length)
           .reduce((acc, length) => acc + length);
       }
       if (this.activeLayoutName == "KanBan") {
         height =
-          this.lists.slice().sort((a, b) => a.tasks.length - b.tasks.length)[0]
-            .tasks.length + 1;
+          this.lists.slice().sort((a, b) => a.items.length - b.items.length)[0]
+            .items.length + 1;
       }
       if (this.activeLayoutName == "Timeline") {
         height = this.lists
-          .map(list => list.tasks.length)
+          .map(list => list.items.length)
           .reduce((acc, length) => acc + length);
       }
 
@@ -69,7 +61,7 @@ export default {
     },
     width() {
       return this.listsComputed
-        .map(list => list.tasks)
+        .map(list => list.items)
         .flat()
         .reduce((acc, task) => task.offsetLeft + task.width);
     },
@@ -79,19 +71,19 @@ export default {
 
       return this.lists.map((list, $index) => {
         if ($index > 0) {
-          offsetTop = offsetTop + this.lists[$index - 1].tasks.length;
+          offsetTop = offsetTop + this.lists[$index - 1].items.length;
         }
 
-        const height = list.tasks.length;
+        const height = list.items.length;
 
         Object.assign(list, { offsetTop, height });
 
-        list.tasks = list.tasks.map((task, $taskIndex) => {
+        list.items = list.items.map((task, $taskIndex) => {
           const prev =
-            list.tasks[$taskIndex - 1] ||
+            list.items[$taskIndex - 1] ||
             (this.lists[$index - 1]
-              ? this.lists[$index - 1].tasks[
-                  this.lists[$index - 1].tasks.length - 1
+              ? this.lists[$index - 1].items[
+                  this.lists[$index - 1].items.length - 1
                 ]
               : null);
           offsetLeft = prev ? offsetLeft + prev.width : offsetLeft;
