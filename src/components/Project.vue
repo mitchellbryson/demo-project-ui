@@ -1,46 +1,23 @@
 <template>
   <div>
-    <div
-      class="project-actions p-3 d-flex justify-content-center bg-white shadow"
-    >
-      <div class="actions btn-group">
-        <button
-          @click="layoutActive = $index"
-          v-for="(value, key, $index) in layoutOptions"
-          :key="$index"
-          class="btn btn-outline-primary flex-shrink-1"
-          :class="{ active: layoutActive === $index }"
-        >
-          {{ value }}
-        </button>
-      </div>
-    </div>
+    <ActionGroup
+      class="project-actions"
+      :actions="layout.options"
+      :active.sync="layout.active"
+    />
+
     <div class="project bg-light">
       <div
         class="project-canvas"
-        :class="layoutOptions[layoutActive]"
+        :class="layout.options[layout.active].toLowerCase()"
         :style="`--height: ${height}; --width: ${width}`"
       >
-        <div
-          class="list rounded"
+        <List
           v-for="list in listsComputed"
           :key="list.label"
-          :style="`--offset-top: ${list.offsetTop}; --height: ${list.height}`"
-        >
-          <div class="list-label">{{ list.label }}</div>
-          <div class="tasks" ref="tasks">
-            <article
-              class="task rounded bg-white shadow-sm"
-              v-for="task in list.tasks"
-              :key="task.label"
-              :style="
-                `--offset-top: ${task.offsetTop}; --offset-left: ${task.offsetLeft}; --width: ${task.width}`
-              "
-            >
-              {{ task.label }}
-            </article>
-          </div>
-        </div>
+          :list="list"
+          class="list"
+        />
       </div>
     </div>
   </div>
@@ -52,31 +29,37 @@ export default {
     lists: Array
   },
 
+  components: {
+    ActionGroup: () => import("@/components/ActionGroup"),
+    List: () => import("@/components/List")
+  },
+
   data() {
     return {
-      layoutActive: 0,
-      layoutOptions: {
-        0: "table",
-        1: "kanban",
-        2: "timeline"
+      layout: {
+        active: 0,
+        options: ["Table", "KanBan", "Timeline"]
       }
     };
   },
 
   computed: {
+    activeLayoutName() {
+      return this.layout.options[this.layout.active];
+    },
     height() {
       let height = 0;
-      if (this.layoutActive == 0) {
+      if (this.activeLayoutName == "Table") {
         height = this.lists
           .map(list => list.tasks.length)
           .reduce((acc, length) => acc + length);
       }
-      if (this.layoutActive == 1) {
+      if (this.activeLayoutName == "KanBan") {
         height =
           this.lists.slice().sort((a, b) => a.tasks.length - b.tasks.length)[0]
             .tasks.length + 1;
       }
-      if (this.layoutActive == 2) {
+      if (this.activeLayoutName == "Timeline") {
         height = this.lists
           .map(list => list.tasks.length)
           .reduce((acc, length) => acc + length);
@@ -133,14 +116,7 @@ export default {
 $actionsHeight: 70px
 $padding: 2rem
 
-html,
-body
-  margin: 0
-  padding: 0
-  width: 100%
-  height: 100%
-
-*
+.project *
   transition: all .5s
 .project-actions
   position: relative
@@ -161,12 +137,6 @@ body
   left: 0
   width: 100%
   background: rgba($dark, .1)
-  &:nth-child(1)
-    background: rgba(red, .1)
-  &:nth-child(2)
-    background: rgba(green, .1)
-  &:nth-child(3)
-    background: rgba(blue, .1)
 .list-label
   position: absolute
   top: 0
@@ -184,12 +154,6 @@ body
   top: 0
   left: 0
   width: 100%
-  height: $spacer * 2
-  line-height: $spacer * 2
-  padding: 0 ($spacer / 2)
-  color: rgba($dark, .9)
-  font-weight: 600
-.task
 
 .kanban
   height: calc(#{$padding + ($padding / 2)} * var(--height) + calc(#{$padding} * 2))
