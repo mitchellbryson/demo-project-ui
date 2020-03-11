@@ -35,7 +35,7 @@ export default {
         const label = `List ${listIndex + 1}`;
         const color = colors.splice(0, 1);
 
-        const items = [...Array(Math.round(Math.random() * 30) + 3).keys()].map(
+        const items = [...Array(Math.round(Math.random() * 25) + 3).keys()].map(
           itemIndex => {
             const taskId = Math.random()
               .toString(36)
