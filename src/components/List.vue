@@ -3,7 +3,7 @@
     <div class="list-label">
       {{ list.label }}
     </div>
-    <Items :items="list.items" />
+    <Items :items="itemsWithStyles" />
   </div>
 </template>
 
@@ -17,8 +17,24 @@ export default {
   },
 
   computed: {
+    itemsWithStyles() {
+      let prevLeft = 0;
+
+      return this.list.items.map(item => {
+        const styles = {
+          "--left": prevLeft,
+          "--width": item.duration
+        };
+
+        prevLeft += item.duration;
+
+        return Object.assign(item, { styles });
+      });
+    },
     styles() {
-      return `background-color: ${this.list.color};`;
+      return Object.assign({}, this.list.styles, {
+        "background-color": this.list.color
+      });
     }
   },
 
@@ -32,7 +48,7 @@ export default {
 .list
   background: rgba($dark, .1)
 .list-label
-  padding: ($spacer / 2) $spacer
+  padding: ($spacer / 2)
   color: rgba($dark, .6)
   font-weight: 600
 </style>
