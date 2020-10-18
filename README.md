@@ -1,1 +1,1 @@
-See a [Demo](https://mitchellbryson.github.io/VueProject/).
+![alt text](https://mitchellbryson.github.io/demo-project-ui/demo.gif)
