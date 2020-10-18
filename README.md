@@ -1,1 +1,1 @@
-![alt text](https://mitchellbryson.github.io/demo-project-ui/demo.gif)
+![](https://mitchellbryson.github.io/demo-project-ui/demo.gif)
